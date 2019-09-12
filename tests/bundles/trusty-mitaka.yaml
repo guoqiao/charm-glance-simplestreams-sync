@@ -7,24 +7,17 @@ machines:
   '0':
     constraints: mem=3072M
     # series "trusty" not supported by mysql charm
-    series: bionic
+    series: xenial
   '1':
   '2':
-    # series "trusty" not supported by vault charm
-    series: bionic
   '3':
   '4':
-  '5':
 
 relations:
-  - ['vault:shared-db', 'mysql:shared-db']
   - ['keystone:shared-db', 'mysql:shared-db']
   - ['glance:shared-db', 'mysql:shared-db']
   - ['glance:amqp', 'rabbitmq-server:amqp']
   - ['glance-simplestreams-sync:amqp', 'rabbitmq-server:amqp']
-  - ['keystone:certificates', 'vault:certificates']
-  - ['glance:certificates', 'vault:certificates']
-  - ['glance-simplestreams-sync:certificates', 'vault:certificates']
   - ['glance:identity-service', 'keystone:identity-service']
   - ['glance-simplestreams-sync:identity-service', 'keystone:identity-service']
 
@@ -32,7 +25,7 @@ applications:
   mysql:
     charm: cs:~openstack-charmers-next/percona-cluster
     # series "trusty" not supported by mysql charm
-    series: bionic
+    series: xenial
     num_units: 1
     to:
       - '0'
@@ -43,27 +36,20 @@ applications:
       ssl: 'on'  # must be str(in quote), otherwise it's bool
     to:
       - '1'
-  vault:
-    charm: cs:~openstack-charmers-next/vault
-    # series "trusty" not supported by vault charm
-    series: bionic
-    num_units: 1
-    to:
-      - '2'
   keystone:
     charm: cs:~openstack-charmers-next/keystone
     num_units: 1
     options:
       openstack-origin: cloud:trusty-mitaka
     to:
-      - '3'
+      - '2'
   glance:
     charm: cs:~openstack-charmers-next/glance
     num_units: 1
     options:
       openstack-origin: cloud:trusty-mitaka
     to:
-      - '4'
+      - '3'
   glance-simplestreams-sync:
     charm: ../../glance-simplestreams-sync
     num_units: 1
@@ -71,4 +57,4 @@ applications:
       source: ppa:simplestreams-dev/trunk
       use_swift: False
     to:
-      - '5'
+      - '4'
