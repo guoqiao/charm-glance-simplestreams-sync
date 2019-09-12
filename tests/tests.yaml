@@ -6,7 +6,7 @@ comment:
 # functest-run-suite ...
 # functest-deploy --bundle /path/to/gate/bundle
 gate_bundles:
-  - trusty-mitaka
+  - model_alias_trusty: trusty-mitaka
   - xenial-mitaka
   - xenial-ocata
   - xenial-pike
@@ -39,6 +39,8 @@ target_deploy_status:
 # functest-configure
 configure:
   - zaza.openstack.charm_tests.vault.setup.auto_initialize
+  # skip vault init for trusty since vault doesn't suport trusty
+  - model_alias_trusty: []
 
 # functest-test
 tests:
